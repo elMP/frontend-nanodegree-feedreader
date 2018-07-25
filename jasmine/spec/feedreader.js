@@ -33,6 +33,7 @@ $(function() {
          */
         it('have a URL defined', function() {
             allFeeds.forEach(element => {
+                //all feed should have url property
                 expect(element.url).toBeDefined();
                 expect(element.url.length).toBeGreaterThan(0);            
             });
@@ -44,6 +45,7 @@ $(function() {
          */
         it('have a name defined', function() {
             allFeeds.forEach(element => {
+                //all feed should have name property
                 expect(element.name).toBeDefined();
                 expect(element.name.length).toBeGreaterThan(0);            
             });
@@ -58,6 +60,7 @@ $(function() {
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+        //menu is hidden if body has class .menu-hidden
         it('has hidden by default', function() {
             expect($('body').hasClass('menu-hidden')).toBe(true);
         }); 
@@ -67,9 +70,10 @@ $(function() {
           * clicked and does it hide when clicked again.
           */
         it('visible then menu icon clicked', function() {
+            //after first click menu should be visible
             $('.menu-icon-link').click();
             expect($('body').hasClass('menu-hidden')).toBe(false);
-
+            //after second click menu should be hidden again
             $('.menu-icon-link').click();
             expect($('body').hasClass('menu-hidden')).toBe(true);
         }); 
@@ -88,7 +92,7 @@ $(function() {
               done();
             });
         });
-
+        //load feeds and find .entries in .feed
         it('loadFeed completed then at least one element in .feed container', function(done) {
             let entries = $('.feed').find('.entry');
             expect(entries.length).toBeGreaterThan(0);
@@ -97,9 +101,27 @@ $(function() {
     });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
-
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+        let oldContent, newContent;
+        //load feeds twice (for two diffrent blogs), 
+        //save the first and the second content and then compare it
+        beforeEach(function(done) {
+            loadFeed(0, function() {
+                oldContent = document.querySelector('.feed').innerHTML;
+                loadFeed(1, function() {
+                    done();
+                });
+            });
+        });
+
+        it('content should changed', function(done) {
+            newContent = document.querySelector('.feed').innerHTML;
+            expect(oldContent).not.toEqual(newContent);
+            done();
+        });
+    });
 }());
